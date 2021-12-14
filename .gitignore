@@ -3,3 +3,4 @@ golemgrid-backend/
 golemgrid-container-manager/
 golemgrid-frontend/
 *.DS_STORE
+/uploads/
