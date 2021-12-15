@@ -44,7 +44,7 @@ services:
     build:
       context: golemgrid-backend/.
       dockerfile: dockerfiles/Django
-    image: phillipjensen/golemgrid-backend:latest
+    image: golemgrid-backend:latest
     ports:
       - "8002:8002"
     depends_on:
@@ -76,7 +76,7 @@ services:
     build:
       context: golemgrid-container-manager/.
       dockerfile: dockerfiles/Django
-    image: phillipjensen/golemgrid-container-manager:latest
+    image: golemgrid-container-manager:latest
     ports:
       - "8003:8003"
     depends_on:
@@ -124,7 +124,7 @@ services:
     build:
       context: golemgrid-backend/.
       dockerfile: dockerfiles/Celery
-    image: phillipjensen/golemgrid-backend-celery:latest
+    image: golemgrid-backend-celery:latest
     volumes:
       - "./golemgrid-backend/api-backend:/api-backend/"
     env_file:
@@ -147,7 +147,7 @@ services:
     build:
       context: golemgrid-backend/.
       dockerfile: dockerfiles/Beat
-    image: phillipjensen/golemgrid-backend-celery-beat:latest
+    image: golemgrid-backend-celery-beat:latest
     command: celery -A core beat -l INFO
     volumes:
       - "./golemgrid-backend/api-backend:/api-backend/"
@@ -171,7 +171,7 @@ services:
     build:
       context: golemgrid-container-manager/.
       dockerfile: dockerfiles/Celery
-    image: phillipjensen/golemgrid-container-manager-celery:latest
+    image: golemgrid-container-manager-celery:latest
     volumes:
       - "./golemgrid-container-manager/container-backend:/container-backend/"
       - "./uploads:/container-backend/var/media"
@@ -195,7 +195,7 @@ services:
     build:
       context: golemgrid-container-manager/.
       dockerfile: dockerfiles/Beat
-    image: phillipjensen/golemgrid-container-manager-celery-beat:latest
+    image: golemgrid-container-manager-celery-beat:latest
     command: celery -A core beat -l INFO
     volumes:
       - "./golemgrid-container-manager/container-backend:/container-backend/"

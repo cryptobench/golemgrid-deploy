@@ -37,15 +37,10 @@ services:
     networks:
       - swarm-example
   api:
-    build:
-      context: .
-      dockerfile: compose/django/Dockerfile
-    image: webserver:latest
+    image: phillipjensen/golemgrid-backend:latest
     depends_on:
       - postgres
     volumes:
-      - "./api-backend:/api-backend/"
-      - "./wait-for-it.sh:/wait-for-it.sh"
       - "./uploads:/api-backend/var/media"
     env_file:
       - ./.envs/.django
@@ -73,18 +68,13 @@ services:
     networks:
       - swarm-example
   container-manager-api:
-    build:
-      context: .
-      dockerfile: compose/container-manager/Dockerfile
-    image: container-manager-api:latest
+    image: phillipjensen/golemgrid-container-manager:latest
     ports:
       - "8003:8003"
     depends_on:
       - postgres
     volumes:
-      - "./golemgrid-container-manager/container-backend:/container-backend/"
       - "./uploads:/container-backend/var/media"
-      - "./wait-for-it.sh:/wait-for-it.sh"
       - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
       - ./.envs/.container-manager
@@ -120,14 +110,7 @@ services:
     networks:
       - swarm-example
   celery:
-    build:
-      context: .
-      dockerfile: compose/celery/Dockerfile
-    image: celery_worker:latest
-    volumes:
-      - "./api-backend:/api-backend/"
-      - "./wait-for-it.sh:/wait-for-it.sh"
-      - "./check_yagna.sh:/check_yagna.sh"
+    image: phillipjensen/golemgrid-backend-celery:latest
     env_file:
       - ./.envs/.django
     depends_on:
@@ -143,14 +126,8 @@ services:
     networks:
       - swarm-example
   celery_beat:
-    build:
-      context: .
-      dockerfile: compose/celery/Dockerfile
-    image: celery_beat:latest
+    image: phillipjensen/golemgrid-backend-celery-beat:latest
     command: celery -A core beat -l INFO
-    volumes:
-      - "./api-backend:/api-backend/"
-      - "./wait-for-it.sh:/wait-for-it.sh"
     env_file:
       - ./.envs/.django
     depends_on:
@@ -166,14 +143,9 @@ services:
     networks:
       - swarm-example
   celery_container_manager:
-    build:
-      context: .
-      dockerfile: compose/celery_container_manager/Dockerfile
-    image: celery_container_manager:latest
+    image: phillipjensen/golemgrid-container-manager-celery:latest
     volumes:
-      - "./golemgrid-container-manager/container-backend:/container-backend/"
       - "./uploads:/container-backend/var/media"
-      - "./wait-for-it.sh:/wait-for-it.sh"
       - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
       - ./.envs/.container-manager
@@ -191,15 +163,10 @@ services:
     networks:
       - swarm-example
   celery_beat_container_manager:
-    build:
-      context: .
-      dockerfile: compose/celery_container_manager/Dockerfile
-    image: celery_beat_container_manager:latest
+    image: phillipjensen/golemgrid-container-manager-celery-beat:latest
     command: celery -A core beat -l INFO
     volumes:
-      - "./golemgrid-container-manager/container-backend:/container-backend/"
       - "./uploads:/container-backend/var/media"
-      - "./wait-for-it.sh:/wait-for-it.sh"
       - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
       - ./.envs/.container-manager
@@ -217,10 +184,7 @@ services:
     networks:
       - swarm-example
   postgres:
-    image: postgres
-    build:
-      context: .
-      dockerfile: compose/postgres/Dockerfile
+    image: postgres:alpine
     env_file:
       - ./.envs/.db
     volumes:
@@ -228,10 +192,7 @@ services:
     networks:
       - swarm-example
   postgres-container-manager:
-    image: postgres
-    build:
-      context: .
-      dockerfile: compose/postgres/Dockerfile
+    image: postgres:alpine
     env_file:
       - ./.envs/.dbmanager
     volumes:
@@ -239,14 +200,7 @@ services:
     networks:
       - swarm-example
   frontend:
-    build:
-      context: .
-      dockerfile: compose/frontend/Dockerfile
-    image: frontend_golemgrid:latest
-    volumes:
-      - "./golemgrid-frontend:/app"
-      - "/app/node_modules"
-      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+    image: phillipjensen/golemgrid-frontend:latest
     deploy:
       labels:
         - traefik.enable=true
@@ -273,7 +227,7 @@ services:
   nginx-static:
     image: nginx:alpine
     volumes:
-      - "./nginx_static.conf:/etc/nginx/conf.d/default.conf"
+      - "./golemgrid-backend/nginx_static.conf:/etc/nginx/conf.d/default.conf"
       - "./uploads:/uploads/media"
     deploy:
       labels:
