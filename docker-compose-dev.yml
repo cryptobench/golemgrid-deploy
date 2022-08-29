@@ -132,7 +132,7 @@ services:
     depends_on:
       - redis
       - postgres
-      - api
+      - backend
     deploy:
       replicas: 1
       update_config:
@@ -156,7 +156,7 @@ services:
     depends_on:
       - redis
       - postgres
-      - api
+      - backend
     deploy:
       replicas: 1
       update_config:
@@ -174,6 +174,7 @@ services:
     image: golemgrid-container-manager-celery:latest
     volumes:
       - "./golemgrid-container-manager/container-backend:/container-backend/"
+      - "./golemgrid-container-manager/patch_cpu_proc.sh:/proc/cpuinfo"
       - "./uploads:/container-backend/var/media"
       - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
@@ -181,7 +182,7 @@ services:
     depends_on:
       - redis
       - postgres
-      - api
+      - backend
     deploy:
       replicas: 1
       update_config:
@@ -191,6 +192,7 @@ services:
         condition: on-failure
     networks:
       - swarm-example
+
   celery_beat_container_manager:
     build:
       context: golemgrid-container-manager/.
@@ -206,7 +208,7 @@ services:
     depends_on:
       - redis
       - postgres
-      - api
+      - backend
     deploy:
       replicas: 1
       update_config:
