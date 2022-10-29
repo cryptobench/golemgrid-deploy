@@ -174,7 +174,6 @@ services:
     image: golemgrid-container-manager-celery:latest
     volumes:
       - "./golemgrid-container-manager/container-backend:/container-backend/"
-      - "./golemgrid-container-manager/patch_cpu_proc.sh:/proc/cpuinfo"
       - "./uploads:/container-backend/var/media"
       - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
